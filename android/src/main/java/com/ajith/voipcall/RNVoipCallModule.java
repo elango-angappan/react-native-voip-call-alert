@@ -13,10 +13,9 @@ import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 
-
 public class RNVoipCallModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
-  private final ReactApplicationContext reactContext;
+  public static ReactApplicationContext reactContext;
 
   private  RNVoipNotificationHelper rnVoipNotificationHelper;
   private RNVoipSendData sendjsData;
@@ -33,9 +32,9 @@ public class RNVoipCallModule extends ReactContextBaseJavaModule implements Acti
   }
 
 
-  RNVoipCallModule(ReactApplicationContext reactContext) {
+  RNVoipCallModule(ReactApplicationContext rContext) {
     super(reactContext);
-    this.reactContext = reactContext;
+    reactContext = rContext;
     reactContext.addActivityEventListener(this);
     Application applicationContext = (Application) reactContext.getApplicationContext();
     rnVoipNotificationHelper = new RNVoipNotificationHelper(applicationContext);

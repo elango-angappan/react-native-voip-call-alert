@@ -49,6 +49,7 @@ public class RNVoipNotificationHelper {
 
 
     public void sendNotification(ReadableMap json){
+        Log.d("elango - sendNotification:", json.toString());
         int notificationID = json.getInt("notificationId");
 
         Intent dissmissIntent = new Intent(context, RNVoipBroadcastReciever.class);
@@ -68,7 +69,7 @@ public class RNVoipNotificationHelper {
                 .setOngoing(true)
                 .setTimeoutAfter(json.getInt("duration"))
                 .setOnlyAlertOnce(true)
-                .setFullScreenIntent(getPendingIntent(notificationID, "fullScreenIntent", json) , true)
+                .setFullScreenIntent(getPendingIntentLockScreen(notificationID, "fullScreenIntent", json) , true)
                 .setContentIntent(getPendingIntent(notificationID, "contentTap", json))
                 .setSmallIcon(R.drawable.ic_call_black_24dp)
                 .setPriority(Notification.PRIORITY_MAX)
@@ -107,6 +108,18 @@ public class RNVoipNotificationHelper {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("notificationId",notificationID);
         intent.putExtra("callerId", json.getString("callerId"));
+        intent.putExtra("action", type);
+        intent.setAction(type);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
+
+    public PendingIntent getPendingIntentLockScreen(int notificationID , String type, ReadableMap json){
+        Intent intent = new Intent(context, UnlockScreenActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("notificationId",notificationID);
+        intent.putExtra("callerId", json.getString("callerId"));
+        intent.putExtra("devId", json.getString("devId"));
         intent.putExtra("action", type);
         intent.setAction(type);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);

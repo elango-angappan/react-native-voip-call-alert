@@ -3,6 +3,7 @@
           package="com.ajith.voipcall">
         <application>
             <receiver android:name="com.ajith.voipcall.RNVoipBroadcastReciever" />
+            <activity android:name=".UnlockScreenActivity" />
         </application>
 </manifest>
   

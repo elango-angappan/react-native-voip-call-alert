@@ -84,6 +84,12 @@ public class RNVoipConfig {
         }else{
             config.putString("callerId", "123456789");
         }
+        //Device Id
+        if(checkType(json , "devId", "String")){
+            config.putString("devId", json.getString("devId"));
+        }else{
+            config.putString("devId", "");
+        }
         return config;
     }
 
