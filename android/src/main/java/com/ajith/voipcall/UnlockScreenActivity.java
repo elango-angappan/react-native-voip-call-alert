@@ -42,7 +42,7 @@ public class UnlockScreenActivity extends AppCompatActivity {
     private Timer timer;
 
     int notificationId;
-    String callerId, action, devId;
+    String callerId, action, devId, notificationBody;
     RNVoipNotificationHelper rnVoipNotificationHelper;
 
     @Override
@@ -80,12 +80,14 @@ public class UnlockScreenActivity extends AppCompatActivity {
         notificationId = getIntent().getIntExtra("notificationId",0);
         callerId = getIntent().getStringExtra("callerId");
         devId = getIntent().getStringExtra("devId");
+        notificationBody = getIntent().getStringExtra("notificationBody");
         action = getIntent().getStringExtra("action");
 
         tvName = findViewById(R.id.tvName);
         tvInfo = findViewById(R.id.tvInfo);
         ivAvatar = findViewById(R.id.ivAvatar);
 
+        tvName.setText(notificationBody);
         /*Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             if (bundle.containsKey("notificationId")) {
@@ -116,6 +118,8 @@ public class UnlockScreenActivity extends AppCompatActivity {
 
         /*getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);*/
+
+        //Picasso.get().load(R.drawable.ic_avatar_default).transform(new CircleTransform()).into(ivAvatar);
 
         turnScreenOnAndKeyguardOff();
 
@@ -163,8 +167,17 @@ public class UnlockScreenActivity extends AppCompatActivity {
                 player.stop();
                 player.prepareAsync();*/
 //                dismissDialing();
-                RNVoipRingtunePlayer.getInstance(UnlockScreenActivity.this).stopMusic();
-                rnVoipNotificationHelper.clearNotification(notificationId);
+                /*RNVoipRingtunePlayer.getInstance(UnlockScreenActivity.this).stopMusic();
+                rnVoipNotificationHelper.clearNotification(notificationId);*/
+
+                WritableMap params = Arguments.createMap();
+                params.putBoolean("accept", false);
+                params.putString("uuid", uuid);
+                params.putInt("notificationId", notificationId);
+                params.putString("callerId", callerId);
+                params.putString("devId", devId);
+                sendEvent("endCall", params);
+                finish();
             }
         });
 

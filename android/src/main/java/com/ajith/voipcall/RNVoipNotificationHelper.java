@@ -108,6 +108,8 @@ public class RNVoipNotificationHelper {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("notificationId",notificationID);
         intent.putExtra("callerId", json.getString("callerId"));
+        intent.putExtra("devId", json.getString("devId"));
+        intent.putExtra("notificationBody", json.getString("notificationBody"));
         intent.putExtra("action", type);
         intent.setAction(type);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -120,6 +122,7 @@ public class RNVoipNotificationHelper {
         intent.putExtra("notificationId",notificationID);
         intent.putExtra("callerId", json.getString("callerId"));
         intent.putExtra("devId", json.getString("devId"));
+        intent.putExtra("notificationBody", json.getString("notificationBody"));
         intent.putExtra("action", type);
         intent.setAction(type);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
