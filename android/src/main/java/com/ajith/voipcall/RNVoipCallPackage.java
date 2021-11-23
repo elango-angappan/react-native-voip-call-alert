@@ -13,7 +13,7 @@ import com.facebook.react.bridge.JavaScriptModule;
 public class RNVoipCallPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-      return Arrays.<NativeModule>asList(new RNVoipCallModule(reactContext));
+      return Arrays.<NativeModule>asList(new RNVoipCallModule(reactContext), new VoipModule(reactContext));
     }
 
     // Deprecated from RN 0.47

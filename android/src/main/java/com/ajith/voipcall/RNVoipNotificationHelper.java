@@ -13,6 +13,7 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReadableMap;
@@ -83,6 +84,12 @@ public class RNVoipNotificationHelper {
         NotificationManager notificationManager = notificationManager();
         createCallNotificationChannel(notificationManager, json);
         notificationManager.notify(notificationID,notification);
+
+        /*PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        String packageName = context.getPackageName();
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                | PowerManager.ON_AFTER_RELEASE, packageName+"_WakeLock");
+        wakeLock.acquire(30*60*1000L *//*30 minutes*//*);*/
     }
 
 

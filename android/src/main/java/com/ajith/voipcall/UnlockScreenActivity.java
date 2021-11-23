@@ -3,17 +3,24 @@ package com.ajith.voipcall;
 import android.app.Activity;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.react.ReactApplication;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
@@ -45,6 +52,10 @@ public class UnlockScreenActivity extends AppCompatActivity {
     String callerId, action, devId, notificationBody;
     RNVoipNotificationHelper rnVoipNotificationHelper;
 
+    private Handler handler;
+    private ProgressDialog progressDialog;
+    private RNOperationHelper rnOperationHelper;
+
     @Override
     public void onStart() {
         super.onStart();
@@ -73,6 +84,7 @@ public class UnlockScreenActivity extends AppCompatActivity {
 
         fa = this;
         context = this;
+        handler = new Handler();
 
         setContentView(R.layout.activity_call_incoming);
 
@@ -116,8 +128,8 @@ public class UnlockScreenActivity extends AppCompatActivity {
             else this.timeout = 0;
         }*/
 
-        /*getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);*/
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
         //Picasso.get().load(R.drawable.ic_avatar_default).transform(new CircleTransform()).into(ivAvatar);
 
@@ -181,6 +193,71 @@ public class UnlockScreenActivity extends AppCompatActivity {
             }
         });
 
+
+        ReactApplication rApp = (ReactApplication) getApplication();
+        rnOperationHelper = new RNOperationHelper(rApp, UnlockScreenActivity.this, new RNOperationHelper.OperationCallback() {
+            @Override
+            public void onSuccess(final String message) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "elango-GET_MESSAGE_IMAGE onSuccess-:" + message);
+                        /*hideProgressDialog();
+                        setResult(RESULT_OK, null);
+                        finish();*/
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(final String message) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "elango-GET_MESSAGE_IMAGE onFailure-:" + message);
+                        /*hideProgressDialog();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(UnlockScreenActivity.this);
+                        builder.setTitle("Error");
+                        builder.setMessage("Error in removing the camera.");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();*/
+                    }
+                });
+            }
+
+            @Override
+            public void foundLock(ReadableMap lock) {
+
+            }
+        });
+
+        rnOperationHelper.performOperation(RNOperationHelper.Operation.GET_MESSAGE_IMAGE, devId);
+    }
+
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(UnlockScreenActivity.this);
+        progressDialog.setMessage("Loading..");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+    }
+
+    private void showProgressDialog(boolean isCancelable) {
+        progressDialog = new ProgressDialog(UnlockScreenActivity.this);
+        progressDialog.setMessage("Loading..");
+        progressDialog.setCancelable(isCancelable);
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
