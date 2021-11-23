@@ -205,6 +205,18 @@ public class UnlockScreenActivity extends AppCompatActivity {
                         /*hideProgressDialog();
                         setResult(RESULT_OK, null);
                         finish();*/
+                        try {
+                            Picasso.get()
+                                    .load(message)
+                                    .placeholder(R.drawable.doorbell_call)
+                                    .error(R.drawable.doorbell_call)
+                                    .fit()
+                                    .centerInside()
+                                    .noFade()
+                                    .into(ivAvatar);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
