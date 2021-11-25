@@ -2,6 +2,7 @@ package com.ajith.voipcall;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -162,6 +163,19 @@ public class UnlockScreenActivity extends AppCompatActivity {
                 params.putString("devId", devId);
                 sendEvent("answerCall", params);
                 finish();
+
+                KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+
+                if (mKeyguardManager.isDeviceLocked()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mKeyguardManager.requestDismissKeyguard(UnlockScreenActivity.this, new KeyguardManager.KeyguardDismissCallback() {
+                            @Override
+                            public void onDismissSucceeded() {
+                                super.onDismissSucceeded();
+                            }
+                        });
+                    }
+                }
             } catch (Exception e) {
                 WritableMap params = Arguments.createMap();
                 params.putString("message", e.getMessage());
